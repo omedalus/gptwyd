@@ -1,31 +1,31 @@
 @import './base.css';
 
 body {
-  background: black;
-  color: #ddd;
+  background: #fff;
+  color: #222;
   margin: 0;
 }
 
 a {
   cursor: pointer;
-  color: #8cd;
+  color: #448;
   text-decoration: none;
 }
 a:hover {
-  color: #8cf;
+  color: #66c;
   text-decoration: underline;
 }
 p a,
 .caption a {
   color: currentColor;
   text-decoration: underline;
-  text-decoration-color: #777;
+  text-decoration-color: #664;
 }
 
 p a:hover,
 .caption a:hover {
-  color: #fff;
-  text-decoration-color: #fff;
+  color: #000;
+  text-decoration-color: #222;
 }
 
 h1,
@@ -34,7 +34,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: #fff;
+  color: #333;
   margin-top: 0;
   margin-bottom: 0.5em;
 }

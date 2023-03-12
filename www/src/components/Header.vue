@@ -29,9 +29,22 @@ const emit = defineEmits<{}>();
   <div class="header-magic-static-spacer" ref="elemSpacer"></div>
   <header ref="elemHeader">
     <div class="header-contents">
-      <div class="header-title">Perceptron visualizer</div>
+      <div class="header-title">
+        GPT, What are You Doing<span class="animated-punctuation-holder"
+          ><span class="animated-punctuation">?</span
+          ><span style="animation-delay: 0.33s" class="animated-punctuation">!</span
+          ><span style="animation-delay: 1.4s" class="animated-punctuation">?</span>
+        </span>
+      </div>
 
-      <div class="header-text"></div>
+      <div class="header-text">
+        A playpen for visualizing some of GPT's inner workings.
+        <div style="font-size: 0.75rem; display: flex">
+          <a href="mailto:perceptronviz@gmail.com">Contact the developer</a>
+          <div style="width: 100%"></div>
+          <a target="_blank" href="https://github.com/omedalus/gptwyd">See the source code</a>
+        </div>
+      </div>
 
       <div class="header-controls"></div>
     </div>
@@ -44,11 +57,13 @@ const emit = defineEmits<{}>();
 }
 
 header {
-  background-color: #333;
+  background-color: #ff8;
+  color: #660;
+
   text-align: center;
   position: relative;
   padding: 0;
-  border-bottom: 1px solid #666;
+  border-bottom: 2px solid #aa0;
   width: 100%;
 
   position: fixed;
@@ -77,8 +92,14 @@ header {
   font-size: 1.5rem;
   font-weight: bold;
   margin-right: auto;
-  color: white;
   white-space: nowrap;
+
+  .animated-punctuation-holder {
+    display: inline-block;
+    position: relative;
+    left: -0.5ex;
+    transform: scale(1.2);
+  }
 }
 .header-text {
   a {
@@ -87,22 +108,6 @@ header {
 
   @media screen and (max-width: 1024px) {
     padding-bottom: 1ex;
-  }
-}
-
-.header-controls {
-  margin-left: auto;
-  font-size: 0.875rem;
-  text-align: left;
-
-  @media screen and (max-width: 1024px) {
-    text-align: center;
-  }
-
-  .funny-explanation-controls-caption {
-    font-weight: bold;
-    color: white;
-    font-style: italic;
   }
 }
 
@@ -136,54 +141,5 @@ header {
   display: inline-block;
   position: relative;
   animation: animated-punctuation 2s infinite;
-}
-
-.saveload-controls {
-  font-size: 0.75rem;
-  position: absolute;
-  left: 0;
-  top: calc(100% - 0.75ex);
-  background-color: #333;
-  padding: 0.5ex 1ex;
-  padding-top: 0;
-  border: 1.5px solid #666;
-  border-top: none;
-  border-left: none;
-  border-radius: 0 0 1em 0;
-  text-align: left;
-  max-width: 40ex;
-
-  .savemessage,
-  .loadmessage {
-    display: none;
-    &.savemessage-showing,
-    &.loadmessage-showing {
-      display: block;
-    }
-  }
-
-  .loadmessage {
-    .sample-perceptron {
-      a {
-        display: block;
-        margin-left: 1em;
-        padding-left: 1em;
-        position: relative;
-
-        &::before {
-          position: absolute;
-          top: 0;
-          left: 0;
-          content: '⚬';
-        }
-
-        &:hover {
-          &::before {
-            content: '→';
-          }
-        }
-      }
-    }
-  }
 }
 </style>
