@@ -1,35 +1,100 @@
 @import './base.css';
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
+body {
+  background: black;
+  color: #ddd;
+  margin: 0;
 }
 
-a,
-.green {
+a {
+  cursor: pointer;
+  color: #8cd;
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
+}
+a:hover {
+  color: #8cf;
+  text-decoration: underline;
+}
+p a,
+.caption a {
+  color: currentColor;
+  text-decoration: underline;
+  text-decoration-color: #777;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+p a:hover,
+.caption a:hover {
+  color: #fff;
+  text-decoration-color: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0.75em;
+}
+
+.explanation-text {
+  font-size: 0.875rem;
+  text-align: left;
+}
+.dimmed-text {
+  color: #888;
+}
+
+@keyframes hide-explanation {
+  from {
+    max-height: 100vh;
+    opacity: 1;
+    display: block;
+  }
+  to {
+    max-height: 0;
+    opacity: 0.2;
+    display: none;
+  }
+}
+@keyframes show-explanation {
+  0% {
+    max-height: 0;
+    opacity: 0.2;
+    display: block;
+  }
+  99% {
+    max-height: 100vh;
+    opacity: 1;
+  }
+  100% {
+    max-height: unset;
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+.explanation-hideable {
+  overflow: hidden;
+  display: none;
+}
+.explanations-are-showing .explanation-hideable {
+  animation: show-explanation 1s ease-in-out forwards;
+  display: block;
+}
+.explanations-are-not-showing .explanation-hideable {
+  animation: hide-explanation 1s ease-in-out forwards;
+  display: block;
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+.hoverafter-trigger + .hoverafter-displayer {
+  display: none;
+}
+.hoverafter-trigger:hover + .hoverafter-displayer {
+  display: block;
 }
