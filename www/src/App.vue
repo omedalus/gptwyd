@@ -25,8 +25,9 @@ onMounted(() => {});
 .interactive-panels {
   display: flex;
   flex-direction: row;
-
-  margin: 1em;
+  min-height: calc(100vh - 6em);
+  padding: 1em;
+  gap: 1em;
 
   @media screen and (max-width: 960px) {
     display: block;
@@ -37,10 +38,14 @@ onMounted(() => {});
 
   .interactive-panel {
     flex: 1;
-    margin: 1em;
     margin-top: 0;
     text-align: center;
     min-width: 16em;
+
+    border: 2px solid #cc8;
+    border-radius: 1em;
+
+    background-color: #fff;
   }
 }
 </style>
