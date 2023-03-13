@@ -24,6 +24,25 @@ class WordTreeNode {
     retval += this.word;
     return retval;
   }
+
+  public _getDescendantTextsRecursive(accumulator: string, results: string[], skipself?: boolean) {
+    if (!skipself) {
+    accumulator += this.word;
+    }
+
+    if (!this.children.length) {
+      results.push(accumulator);
+    } else {
+      this.children.forEach((child) => {
+        child._getDescendantTextsRecursive(accumulator, results);
+      });
+    }
+    return results;
+  }
+
+  public get descendantTexts() {
+    return this._getDescendantTextsRecursive('', [], true);
+  }
 }
 
 export default WordTreeNode;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { OpenAIApi } from 'openai';
-import { ref, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 
 import WordTreeNode from '@/model/WordTreeNode';
 
@@ -23,6 +23,17 @@ const selectedChildIndex = ref(0);
 const props = defineProps<{
   openai: OpenAIApi;
 }>();
+
+const selectedChild = computed(() => {
+  if (!currentWordTreeNode.value) {
+    return null;
+  }
+  const retval = currentWordTreeNode.value.children[selectedChildIndex.value];
+  if (!retval) {
+    return null;
+  }
+  return retval;
+});
 
 const blurEventTarget = (ev: Event) => {
   // Don't blur if shift key is being pressed.
@@ -59,7 +70,7 @@ const requestNextOptionList = async (prompt: string) => {
   const topLogProbsDict = topLogProbsArray[0] as { [key: string]: number };
   let nextWordChoices = [] as { word: string; prob: number }[];
   [...Object.keys(topLogProbsDict)].forEach((word: string) => {
-    if (!word.trim() || word === '↵') {
+    if (!word.trim() || word === '↵' || word.startsWith('bytes')) {
       return;
     }
     const logit = topLogProbsDict[word];
@@ -124,10 +135,9 @@ const onKeydown = (event: KeyboardEvent) => {
     return;
   }
 
-  const selectedChild = currentWordTreeNode.value.children[selectedChildIndex.value];
-  if (selectedChild) {
+  if (selectedChild.value) {
     if (event.key === 'ArrowDown' || event.key === 'Enter') {
-      currentWordTreeNode.value = selectedChild;
+      currentWordTreeNode.value = selectedChild.value;
       return;
     }
   }
@@ -195,6 +205,27 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
+    <div class="next-descendant-texts">
+      <h3>Explored completions from here</h3>
+      <div
+        v-if="selectedChild && selectedChild.children.length > 0"
+        class="next-descendant-text-items"
+      >
+        <div
+          v-for="nexttext in selectedChild.descendantTexts"
+          :key="nexttext"
+          class="next-descendant-text-item"
+        >
+          {{ nexttext }}
+        </div>
+      </div>
+      <div v-else-if="selectedChild">
+        You have not yet explored any branches that follow from:
+        <strong>{{ selectedChild.word }}</strong>
+      </div>
+      <div v-else>You don't currently have any completion options selected.</div>
+    </div>
   </div>
 </template>
 
@@ -248,7 +279,8 @@ onMounted(() => {
   }
 
   .completion-tree-view {
-    height: 20em;
+    height: calc(100vh - 40em);
+    min-height: 10em;
     user-select: none;
   }
 
@@ -307,6 +339,34 @@ onMounted(() => {
     text-align: left;
     padding: 0.5ex 1ex;
     background-color: #eed;
+  }
+
+  .next-descendant-texts {
+    margin-top: 1em;
+    text-align: left;
+    padding: 0 1em;
+    display: flex;
+    flex-direction: column;
+    height: 10em;
+
+    h3 {
+      margin-bottom: 0;
+    }
+
+    .next-descendant-text-items {
+      height: 100%;
+      overflow-y: scroll;
+      margin-left: 1em;
+      padding: 0.5ex 1em;
+      font-size: 0.875rem;
+
+      .next-descendant-text-item {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        background-color: #ffd;
+        margin-bottom: 0.5ex;
+      }
+    }
   }
 }
 </style>
