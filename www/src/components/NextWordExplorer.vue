@@ -70,9 +70,13 @@ const requestNextOptionList = async (prompt: string) => {
 
 watch(currentWordTreeNode, async (newVal, oldVal) => {
   console.log('New current node.');
+  if (!currentWordTreeNode.value.word) {
+    return;
+  }
   if (currentWordTreeNode.value.haveChildrenBeenPopulated) {
     return;
   }
+
   console.log('Current node children have not been populated. Requesting.');
   const prompt = currentWordTreeNode.value.cumulativeText;
   const nextWordChoices = await requestNextOptionList(prompt);
@@ -85,6 +89,17 @@ watch(currentWordTreeNode, async (newVal, oldVal) => {
   });
   currentWordTreeNode.value.haveChildrenBeenPopulated = true;
 });
+
+const getColorFromProbability = (prob: number) => {
+  prob = Math.max(0, prob);
+  prob = Math.min(1, prob);
+
+  const PEAK_V = 240;
+  const v = Math.floor(PEAK_V * (1 - prob));
+
+  const retval = `rgb(${v}, 255, ${v})`;
+  return retval;
+};
 </script>
 
 <template>
@@ -108,9 +123,12 @@ watch(currentWordTreeNode, async (newVal, oldVal) => {
         >
           {{ seedtext }}
         </div>
+        <div class="submission-instructions">
+          To submit, press Enter or click out of the editable box.
+        </div>
       </div>
-      <div class="submission-instructions">
-        To submit, press Enter or click out of the editable box.
+      <div class="current-text-treedeep">
+        Current text: {{ currentWordTreeNode.cumulativeText }}
       </div>
     </div>
 
@@ -123,13 +141,16 @@ watch(currentWordTreeNode, async (newVal, oldVal) => {
         >
           <div
             class="completion-tree-view-option-inner"
-            :style="{ height: (child.probability * 100).toFixed(2) + '%' }"
+            :style="{
+              height: (child.probability * 100).toFixed(2) + '%',
+              backgroundColor: getColorFromProbability(child.probability)
+            }"
           >
             <div class="completion-option-word">
               {{ child.word }}
             </div>
             <div class="completion-option-probability">
-              {{ (child.probability * 100).toFixed(2) }}
+              {{ (child.probability * 100).toFixed(2) }}%
             </div>
           </div>
         </div>
@@ -142,14 +163,15 @@ watch(currentWordTreeNode, async (newVal, oldVal) => {
 .nextwordexplorer {
   .current-text-display {
     .current-text-display-entry-area {
-      border: 1px solid #888;
       margin: 0 1em;
-      border-radius: 1ex;
       text-align: left;
 
       position: relative;
 
       .current-text-editable {
+        border: 1px solid #888;
+        border-radius: 1ex;
+
         min-height: 5em;
         position: relative;
         padding: 0.5ex 1ex;
@@ -213,8 +235,7 @@ watch(currentWordTreeNode, async (newVal, oldVal) => {
       border: 1px solid #664;
       min-height: 3em;
       border-radius: 1ex;
-      background: linear-gradient(90deg, #664 0%, #cca 10%, #cca 75%, #ddb 90%, #cca 100%);
-      box-shadow: inset 0 -0.5ex 0.5ex #664a;
+      box-shadow: inset 0 -0.5ex 0.5ex #242a;
 
       .completion-option-word {
         color: #000;
