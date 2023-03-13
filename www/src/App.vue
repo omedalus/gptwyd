@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 
 import Header from '@/components/Header.vue';
+import NextWordExplorer from './components/NextWordExplorer.vue';
 
 onMounted(() => {});
 </script>
@@ -11,7 +12,9 @@ onMounted(() => {});
 
   <main>
     <div class="interactive-panels mainblock">
-      <div class="interactive-panel interactive-panels--nextword"></div>
+      <div class="interactive-panel interactive-panels--nextword">
+        <NextWordExplorer></NextWordExplorer>
+      </div>
       <div class="interactive-panel interactive-panels--embeddingdistance"></div>
     </div>
   </main>
@@ -29,7 +32,7 @@ onMounted(() => {});
   padding: 1em;
   gap: 1em;
 
-  @media screen and (max-width: 960px) {
+  @media screen and (max-width: 1024px) {
     display: block;
     max-width: 640px;
     margin-left: auto;
