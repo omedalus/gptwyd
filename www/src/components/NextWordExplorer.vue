@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { OpenAIApi } from 'openai';
 import { ref } from 'vue';
 
 // This guide is useful for working with contenteditable elements
@@ -9,6 +10,10 @@ const elemSeedText = ref();
 
 const seedtext = ref('');
 const isEditableFocused = ref(false);
+
+defineProps<{
+  openai: OpenAIApi;
+}>();
 
 const blurEventTarget = (ev: Event) => {
   // Don't blur if shift key is being pressed.
@@ -45,6 +50,9 @@ const submitSeedText = () => {
         >
           {{ seedtext }}
         </div>
+      </div>
+      <div class="submission-instructions">
+        To submit, press Enter or click out of the editable box.
       </div>
     </div>
 
@@ -95,6 +103,14 @@ const submitSeedText = () => {
         }
       }
     }
+  }
+
+  .submission-instructions {
+    font-size: 0.875rem;
+    text-align: right;
+    font-style: italic;
+    margin-right: 2em;
+    color: #888;
   }
 }
 </style>
