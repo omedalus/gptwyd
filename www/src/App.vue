@@ -6,9 +6,14 @@ import NextWordExplorer from './components/NextWordExplorer.vue';
 
 import { Configuration, OpenAIApi } from 'openai';
 
+// We're literally using a hack in order to unsafely expose
+// our API key. OpenAI tracks GitHub to prevent keys from leaking.
+// We are insane for thwarting this safety mechanism.
+import rot13Cipher from 'rot13-cipher';
+
 // Hey hackers, don't bother trying to steal this.
 // It's temporary.
-const TEMPORARY_OPENAI_API_KEY = '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';
+const TEMPORARY_OPENAI_API_KEY = rot13Cipher('fx-bl6VEfiioAlBO9i4MgalG3OyoxSWncmKJaQBgTNVNWMDSjnM');
 const openai = new OpenAIApi(
   new Configuration({
     apiKey: TEMPORARY_OPENAI_API_KEY

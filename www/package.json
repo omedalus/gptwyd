@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "openai": "^3.2.1",
+    "rot13-cipher": "^1.0.0",
     "vue": "^3.2.45"
   },
   "devDependencies": {
