@@ -229,6 +229,15 @@ const getColorFromProbability = (prob: number) => {
       background-color: #e0e0e0;
       border-radius: 1ex;
       cursor: pointer;
+
+      &:hover {
+        background-color: #e0ece0;
+
+        .completion-tree-view-option-inner {
+          outline-color: #0f0;
+          background-color: #ffd !important;
+        }
+      }
     }
 
     .completion-tree-view-option-inner {
@@ -236,6 +245,7 @@ const getColorFromProbability = (prob: number) => {
       min-height: 3em;
       border-radius: 1ex;
       box-shadow: inset 0 -0.5ex 0.5ex #242a;
+      outline: 2px solid transparent;
 
       .completion-option-word {
         color: #000;
