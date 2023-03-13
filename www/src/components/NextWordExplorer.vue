@@ -107,7 +107,7 @@ const getColorFromProbability = (prob: number) => {
     <h2>Next Word Explorer</h2>
 
     <div class="current-text-display">
-      <div class="current-text-display-entry-area">
+      <div class="current-text-display-entry-area" v-if="currentWordTreeNode.parent === null">
         <div
           class="current-text-editable"
           :class="{ 'editable-empty': !seedtext && !isEditableFocused }"
@@ -127,8 +127,9 @@ const getColorFromProbability = (prob: number) => {
           To submit, press Enter or click out of the editable box.
         </div>
       </div>
-      <div class="current-text-treedeep">
-        Current text: {{ currentWordTreeNode.cumulativeText }}
+      <div class="current-text-treedeep" v-else>
+        {{ currentWordTreeNode.parent.cumulativeText
+        }}<strong>{{ currentWordTreeNode.word }}</strong>
       </div>
     </div>
 
