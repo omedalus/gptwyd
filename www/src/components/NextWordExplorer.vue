@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { OpenAIApi } from 'openai';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 
 import WordTreeNode from '@/model/WordTreeNode';
 
@@ -17,6 +17,8 @@ const rootWordTreeNode = ref(new WordTreeNode());
 const currentWordTreeNode = ref(rootWordTreeNode.value);
 
 const isRequestInFlight = ref(false);
+
+const selectedChildIndex = ref(0);
 
 const props = defineProps<{
   openai: OpenAIApi;
@@ -69,7 +71,6 @@ const requestNextOptionList = async (prompt: string) => {
 };
 
 watch(currentWordTreeNode, async (newVal, oldVal) => {
-  console.log('New current node.');
   if (!currentWordTreeNode.value.word) {
     return;
   }
@@ -77,7 +78,6 @@ watch(currentWordTreeNode, async (newVal, oldVal) => {
     return;
   }
 
-  console.log('Current node children have not been populated. Requesting.');
   const prompt = currentWordTreeNode.value.cumulativeText;
   const nextWordChoices = await requestNextOptionList(prompt);
   nextWordChoices.forEach((wordchoice) => {
@@ -88,6 +88,7 @@ watch(currentWordTreeNode, async (newVal, oldVal) => {
     currentWordTreeNode.value.children.push(wtnode);
   });
   currentWordTreeNode.value.haveChildrenBeenPopulated = true;
+  selectedChildIndex.value = 0;
 });
 
 const getColorFromProbability = (prob: number) => {
@@ -100,6 +101,41 @@ const getColorFromProbability = (prob: number) => {
   const retval = `rgb(${v}, 255, ${v})`;
   return retval;
 };
+
+const onKeydown = (event: KeyboardEvent) => {
+  if (event.target !== document.body) {
+    // Only pay attention to key presses that have nowhere else to go.
+    return;
+  }
+  if (
+    event.key === 'ArrowRight' &&
+    selectedChildIndex.value < currentWordTreeNode.value.children.length - 1
+  ) {
+    selectedChildIndex.value++;
+    return;
+  }
+  if (event.key === 'ArrowLeft' && selectedChildIndex.value > 0) {
+    selectedChildIndex.value--;
+    return;
+  }
+
+  if (event.key === 'ArrowUp' && currentWordTreeNode.value.parent !== null) {
+    currentWordTreeNode.value = currentWordTreeNode.value.parent;
+    return;
+  }
+
+  const selectedChild = currentWordTreeNode.value.children[selectedChildIndex.value];
+  if (selectedChild) {
+    if (event.key === 'ArrowDown' || event.key === 'Enter') {
+      currentWordTreeNode.value = selectedChild;
+      return;
+    }
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown);
+});
 </script>
 
 <template>
@@ -140,6 +176,7 @@ const getColorFromProbability = (prob: number) => {
           v-for="(child, iChild) in currentWordTreeNode.children"
           :key="iChild"
           @click="currentWordTreeNode = child"
+          :class="{ 'child-selected': iChild === selectedChildIndex }"
         >
           <div
             class="completion-tree-view-option-inner"
@@ -212,6 +249,7 @@ const getColorFromProbability = (prob: number) => {
 
   .completion-tree-view {
     height: 20em;
+    user-select: none;
   }
 
   .completion-tree-view-options {
@@ -232,7 +270,8 @@ const getColorFromProbability = (prob: number) => {
       border-radius: 1ex;
       cursor: pointer;
 
-      &:hover {
+      &:hover,
+      &.child-selected {
         background-color: #e0ece0;
 
         .completion-tree-view-option-inner {
