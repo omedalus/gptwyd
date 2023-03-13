@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { OpenAIApi } from 'openai';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+
+import WordTreeNode from '@/model/WordTreeNode';
 
 // This guide is useful for working with contenteditable elements
 // in Vue3.
@@ -10,6 +12,11 @@ const elemSeedText = ref();
 
 const seedtext = ref('');
 const isEditableFocused = ref(false);
+
+const rootWordTreeNode = ref(new WordTreeNode());
+const currentWordTreeNode = ref(rootWordTreeNode.value);
+
+const isRequestInFlight = ref(false);
 
 const props = defineProps<{
   openai: OpenAIApi;
@@ -23,25 +30,29 @@ const blurEventTarget = (ev: Event) => {
   (ev?.target as HTMLInputElement)?.blur();
 };
 
-const submitSeedText = () => {
+const updateSeedText = () => {
   seedtext.value = elemSeedText?.value?.innerText?.trim() || '';
-  console.log('Submitting seedtext ', seedtext.value);
-  getNextOptionList(seedtext.value.trim());
+
+  rootWordTreeNode.value = new WordTreeNode();
+  rootWordTreeNode.value.word = seedtext.value;
+  currentWordTreeNode.value = rootWordTreeNode.value;
 };
 
-const getNextOptionList = async (prompt: string) => {
+const requestNextOptionList = async (prompt: string) => {
   if (!prompt) {
-    return;
+    return [];
   }
+  isRequestInFlight.value = true;
   const completion = await props.openai.createCompletion({
     model: 'text-davinci-003',
     prompt: prompt,
     max_tokens: 1,
     logprobs: 5 // The most we can request is 5.
   });
+  isRequestInFlight.value = false;
   const topLogProbsArray = completion.data.choices[0].logprobs?.top_logprobs || [];
   if (!topLogProbsArray.length) {
-    return;
+    return [];
   }
   const topLogProbsDict = topLogProbsArray[0] as { [key: string]: number };
   let nextWordChoices = [] as { word: string; prob: number }[];
@@ -54,8 +65,26 @@ const getNextOptionList = async (prompt: string) => {
     nextWordChoices.push({ word, prob });
   });
   nextWordChoices = nextWordChoices.sort((a, b) => b.prob - a.prob);
-  console.log(nextWordChoices);
+  return nextWordChoices;
 };
+
+watch(currentWordTreeNode, async (newVal, oldVal) => {
+  console.log('New current node.');
+  if (currentWordTreeNode.value.haveChildrenBeenPopulated) {
+    return;
+  }
+  console.log('Current node children have not been populated. Requesting.');
+  const prompt = currentWordTreeNode.value.cumulativeText;
+  const nextWordChoices = await requestNextOptionList(prompt);
+  nextWordChoices.forEach((wordchoice) => {
+    const wtnode = new WordTreeNode();
+    wtnode.parent = currentWordTreeNode.value;
+    wtnode.word = wordchoice.word;
+    wtnode.probability = wordchoice.prob;
+    currentWordTreeNode.value.children.push(wtnode);
+  });
+  currentWordTreeNode.value.haveChildrenBeenPopulated = true;
+});
 </script>
 
 <template>
@@ -74,7 +103,7 @@ const getNextOptionList = async (prompt: string) => {
           @focus="isEditableFocused = true"
           @blur="
             isEditableFocused = false;
-            submitSeedText();
+            updateSeedText();
           "
         >
           {{ seedtext }}
@@ -86,10 +115,16 @@ const getNextOptionList = async (prompt: string) => {
     </div>
 
     <div class="completion-tree-view">
-      <h3>Completion tree</h3>
-      <p>
-        {{ seedtext }}
-      </p>
+      <div class="completion-tree-view-options">
+        <div
+          class="completion-tree-view-option"
+          v-for="(child, iChild) in currentWordTreeNode.children"
+          :key="iChild"
+        >
+          {{ child.word }}
+          {{ child.probability }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
