@@ -11,7 +11,7 @@ const elemSeedText = ref();
 const seedtext = ref('');
 const isEditableFocused = ref(false);
 
-defineProps<{
+const props = defineProps<{
   openai: OpenAIApi;
 }>();
 
@@ -26,6 +26,35 @@ const blurEventTarget = (ev: Event) => {
 const submitSeedText = () => {
   seedtext.value = elemSeedText?.value?.innerText?.trim() || '';
   console.log('Submitting seedtext ', seedtext.value);
+  getNextOptionList(seedtext.value.trim());
+};
+
+const getNextOptionList = async (prompt: string) => {
+  if (!prompt) {
+    return;
+  }
+  const completion = await props.openai.createCompletion({
+    model: 'text-davinci-003',
+    prompt: prompt,
+    max_tokens: 1,
+    logprobs: 5 // The most we can request is 5.
+  });
+  const topLogProbsArray = completion.data.choices[0].logprobs?.top_logprobs || [];
+  if (!topLogProbsArray.length) {
+    return;
+  }
+  const topLogProbsDict = topLogProbsArray[0] as { [key: string]: number };
+  let nextWordChoices = [] as { word: string; prob: number }[];
+  [...Object.keys(topLogProbsDict)].forEach((word: string) => {
+    if (word === '↵' || word === '\n' || word === '\n\n') {
+      return;
+    }
+    const logit = topLogProbsDict[word];
+    const prob = Math.exp(logit);
+    nextWordChoices.push({ word, prob });
+  });
+  nextWordChoices = nextWordChoices.sort((a, b) => b.prob - a.prob);
+  console.log(nextWordChoices);
 };
 </script>
 
