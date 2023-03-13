@@ -121,8 +121,17 @@ watch(currentWordTreeNode, async (newVal, oldVal) => {
           v-for="(child, iChild) in currentWordTreeNode.children"
           :key="iChild"
         >
-          {{ child.word }}
-          {{ child.probability }}
+          <div
+            class="completion-tree-view-option-inner"
+            :style="{ height: (child.probability * 100).toFixed(2) + '%' }"
+          >
+            <div class="completion-option-word">
+              {{ child.word }}
+            </div>
+            <div class="completion-option-probability">
+              {{ (child.probability * 100).toFixed(2) }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -175,6 +184,47 @@ watch(currentWordTreeNode, async (newVal, oldVal) => {
     font-style: italic;
     margin-right: 2em;
     color: #888;
+  }
+
+  .completion-tree-view {
+    height: 20em;
+  }
+
+  .completion-tree-view-options {
+    display: flex;
+    flex-direction: row;
+    gap: 1ex;
+    height: 100%;
+    margin-top: 1em;
+    margin-left: 1ex;
+    margin-right: 1ex;
+    background-color: #eee;
+    border-radius: 1ex;
+
+    .completion-tree-view-option {
+      flex: 1;
+      height: 100%;
+      background-color: #e0e0e0;
+      border-radius: 1ex;
+      cursor: pointer;
+    }
+
+    .completion-tree-view-option-inner {
+      border: 1px solid #664;
+      min-height: 3em;
+      border-radius: 1ex;
+      background: linear-gradient(90deg, #664 0%, #cca 10%, #cca 75%, #ddb 90%, #cca 100%);
+      box-shadow: inset 0 -0.5ex 0.5ex #664a;
+
+      .completion-option-word {
+        color: #000;
+        font-weight: bold;
+      }
+      .completion-option-probability {
+        font-size: 0.875rem;
+        font-style: italic;
+      }
+    }
   }
 }
 </style>
