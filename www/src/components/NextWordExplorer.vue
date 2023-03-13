@@ -57,7 +57,7 @@ const requestNextOptionList = async (prompt: string) => {
   const topLogProbsDict = topLogProbsArray[0] as { [key: string]: number };
   let nextWordChoices = [] as { word: string; prob: number }[];
   [...Object.keys(topLogProbsDict)].forEach((word: string) => {
-    if (word === '↵' || word === '\n' || word === '\n\n') {
+    if (!word.trim() || word === '↵') {
       return;
     }
     const logit = topLogProbsDict[word];
@@ -138,6 +138,7 @@ const getColorFromProbability = (prob: number) => {
           class="completion-tree-view-option"
           v-for="(child, iChild) in currentWordTreeNode.children"
           :key="iChild"
+          @click="currentWordTreeNode = child"
         >
           <div
             class="completion-tree-view-option-inner"
@@ -256,6 +257,16 @@ const getColorFromProbability = (prob: number) => {
         font-style: italic;
       }
     }
+  }
+
+  .current-text-treedeep {
+    margin-right: 1em;
+    margin-left: 1em;
+    border: 1px solid #888;
+    border-radius: 1ex;
+    text-align: left;
+    padding: 0.5ex 1ex;
+    background-color: #eed;
   }
 }
 </style>
