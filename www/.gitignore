@@ -9,7 +9,7 @@ lerna-debug.log*
 
 node_modules
 .DS_Store
-dist
+# dist # Commented out to facilitate git pages
 dist-ssr
 coverage
 *.local
