@@ -209,29 +209,21 @@ onMounted(() => {
               </div>
             </div>
           </div>
+          <div class="next-descendant-texts-holder">
+            <div class="next-descendant-texts">
+              <div class="next-descendant-text-items">
+                <div
+                  v-for="nexttext in child.descendantTexts"
+                  :key="nexttext"
+                  class="next-descendant-text-item"
+                >
+                  {{ nexttext }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="next-descendant-texts">
-      <h3>Explored completions from here</h3>
-      <div
-        v-if="selectedChild && selectedChild.children.length > 0"
-        class="next-descendant-text-items"
-      >
-        <div
-          v-for="nexttext in selectedChild.descendantTexts"
-          :key="nexttext"
-          class="next-descendant-text-item"
-        >
-          {{ nexttext }}
-        </div>
-      </div>
-      <div v-else-if="selectedChild">
-        You have not yet explored any branches that follow from:
-        <strong>{{ selectedChild.word }}</strong>
-      </div>
-      <div v-else>You don't currently have any completion options selected.</div>
     </div>
   </div>
 </template>
@@ -287,7 +279,7 @@ onMounted(() => {
 
   .completion-tree-view {
     height: calc(100vh - 20em);
-    min-height: 10em;
+    min-height: 35em;
     user-select: none;
   }
 
@@ -314,9 +306,10 @@ onMounted(() => {
           background-color: #8c8;
         }
 
-        .completion-tree-view-option-inner {
+        .completion-tree-view-option-bar {
           outline-color: #0f0;
           background-color: #ffd !important;
+          box-shadow: inset 0 -0.25ex 0.25ex #242a;
         }
       }
     }
@@ -330,7 +323,6 @@ onMounted(() => {
       border: 1px solid #664;
       height: 1.5em;
       border-radius: 1ex;
-      box-shadow: inset 0 -0.5ex 0.5ex #242a;
       outline: 2px solid transparent;
       text-align: left;
 
@@ -359,13 +351,24 @@ onMounted(() => {
     background-color: #eed;
   }
 
+  .next-descendant-texts-holder {
+    position: relative;
+    height: calc(100% - 2em);
+  }
   .next-descendant-texts {
-    margin-top: 1em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
     text-align: left;
-    padding: 0 1em;
+    padding: 1ex 1em;
+    padding-right: 0;
+
     display: flex;
     flex-direction: column;
-    height: 10em;
+    box-sizing: border-box;
 
     h3 {
       margin-bottom: 0;
@@ -373,6 +376,8 @@ onMounted(() => {
 
     .next-descendant-text-items {
       height: 100%;
+      max-height: 100%;
+      min-height: 3em;
       overflow-y: scroll;
       margin-left: 1em;
       padding: 0.5ex 1em;
