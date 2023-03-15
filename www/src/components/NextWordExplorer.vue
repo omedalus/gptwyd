@@ -118,26 +118,31 @@ const onKeydown = (event: KeyboardEvent) => {
     // Only pay attention to key presses that have nowhere else to go.
     return;
   }
+
   if (
-    event.key === 'ArrowRight' &&
+    event.key === 'ArrowDown' &&
     selectedChildIndex.value < currentWordTreeNode.value.children.length - 1
   ) {
     selectedChildIndex.value++;
+    event.preventDefault();
     return;
   }
-  if (event.key === 'ArrowLeft' && selectedChildIndex.value > 0) {
+  if (event.key === 'ArrowUp' && selectedChildIndex.value > 0) {
     selectedChildIndex.value--;
+    event.preventDefault();
     return;
   }
 
-  if (event.key === 'ArrowUp' && currentWordTreeNode.value.parent !== null) {
+  if (event.key === 'ArrowLeft' && currentWordTreeNode.value.parent !== null) {
     currentWordTreeNode.value = currentWordTreeNode.value.parent;
+    event.preventDefault();
     return;
   }
 
   if (selectedChild.value) {
-    if (event.key === 'ArrowDown' || event.key === 'Enter') {
+    if (event.key === 'ArrowRight' || event.key === 'Enter') {
       currentWordTreeNode.value = selectedChild.value;
+      event.preventDefault();
       return;
     }
   }
@@ -188,18 +193,20 @@ onMounted(() => {
           @click="currentWordTreeNode = child"
           :class="{ 'child-selected': iChild === selectedChildIndex }"
         >
-          <div
-            class="completion-tree-view-option-inner"
-            :style="{
-              height: (child.probability * 100).toFixed(2) + '%',
-              backgroundColor: getColorFromProbability(child.probability)
-            }"
-          >
-            <div class="completion-option-word">
-              {{ child.word }}
-            </div>
-            <div class="completion-option-probability">
-              {{ (child.probability * 100).toFixed(2) }}%
+          <div class="completion-tree-view-option-bar-groove">
+            <div
+              class="completion-tree-view-option-bar"
+              :style="{
+                width: (child.probability * 100).toFixed(2) + '%',
+                backgroundColor: getColorFromProbability(child.probability)
+              }"
+            >
+              <div class="completion-option-word">
+                {{ child.word }}
+              </div>
+              <div class="completion-option-probability">
+                {{ (child.probability * 100).toFixed(2) }}%
+              </div>
             </div>
           </div>
         </div>
@@ -279,14 +286,14 @@ onMounted(() => {
   }
 
   .completion-tree-view {
-    height: calc(100vh - 40em);
+    height: calc(100vh - 20em);
     min-height: 10em;
     user-select: none;
   }
 
   .completion-tree-view-options {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 1ex;
     height: 100%;
     margin-top: 1em;
@@ -298,13 +305,14 @@ onMounted(() => {
     .completion-tree-view-option {
       flex: 1;
       height: 100%;
-      background-color: #e0e0e0;
       border-radius: 1ex;
       cursor: pointer;
 
       &:hover,
       &.child-selected {
-        background-color: #e0ece0;
+        .completion-tree-view-option-bar-groove {
+          background-color: #8c8;
+        }
 
         .completion-tree-view-option-inner {
           outline-color: #0f0;
@@ -313,20 +321,30 @@ onMounted(() => {
       }
     }
 
-    .completion-tree-view-option-inner {
+    .completion-tree-view-option-bar-groove {
+      background-color: #e0e0e0;
+      position: relative;
+    }
+
+    .completion-tree-view-option-bar {
       border: 1px solid #664;
-      min-height: 3em;
+      height: 1.5em;
       border-radius: 1ex;
       box-shadow: inset 0 -0.5ex 0.5ex #242a;
       outline: 2px solid transparent;
+      text-align: left;
 
       .completion-option-word {
         color: #000;
         font-weight: bold;
+        margin-left: 1em;
       }
       .completion-option-probability {
         font-size: 0.875rem;
         font-style: italic;
+        position: absolute;
+        top: 0.5ex;
+        right: 0;
       }
     }
   }
