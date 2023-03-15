@@ -174,13 +174,25 @@ onMounted(() => {
         >
           {{ seedtext }}
         </div>
-        <div class="submission-instructions">
-          To submit, press Enter or click out of the editable box.
+      </div>
+      <div class="current-text-treedeep-holder" v-else>
+        <div
+          class="current-text-arrow-back"
+          @click="currentWordTreeNode = currentWordTreeNode.parent || currentWordTreeNode"
+        >
+          🡄
+        </div>
+        <div class="current-text-treedeep">
+          {{ currentWordTreeNode.parent.cumulativeText
+          }}<strong>{{ currentWordTreeNode.word }}</strong>
         </div>
       </div>
-      <div class="current-text-treedeep" v-else>
-        {{ currentWordTreeNode.parent.cumulativeText
-        }}<strong>{{ currentWordTreeNode.word }}</strong>
+
+      <div class="submission-instructions">
+        <div v-if="currentWordTreeNode.parent === null">
+          To submit, press Enter or click out of the editable box.
+        </div>
+        <div v-else>You can use your arrow keys to navigate the options.</div>
       </div>
     </div>
 
@@ -341,14 +353,48 @@ onMounted(() => {
     }
   }
 
-  .current-text-treedeep {
+  .current-text-treedeep-holder {
     margin-right: 1em;
     margin-left: 1em;
-    border: 1px solid #888;
-    border-radius: 1ex;
-    text-align: left;
-    padding: 0.5ex 1ex;
-    background-color: #eed;
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+
+    .current-text-arrow-back {
+      position: relative;
+      height: 100%;
+      font-size: 2rem;
+      font-weight: bold;
+      border: 1px solid #888;
+      border-radius: 0.5ex;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #664;
+      background-color: #cca;
+      box-shadow: inset 0 -0.25ex 0.25ex #242a;
+      padding: 0 0.25ex;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #ddb;
+      }
+
+      &:active {
+        background-color: #ffc;
+        box-shadow: inset 0 0 0.25ex #2426;
+      }
+    }
+
+    .current-text-treedeep {
+      flex-grow: 1;
+      border: 1px solid #888;
+      border-radius: 1ex;
+      text-align: left;
+      padding: 0.5ex 1ex;
+      background-color: #eed;
+      min-height: 4.5em;
+    }
   }
 
   .next-descendant-texts-holder {
@@ -378,7 +424,7 @@ onMounted(() => {
       height: 100%;
       max-height: 100%;
       min-height: 3em;
-      overflow-y: scroll;
+      overflow-y: auto;
       margin-left: 1em;
       padding: 0.5ex 1em;
       font-size: 0.875rem;
