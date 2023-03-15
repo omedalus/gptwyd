@@ -237,6 +237,24 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
+    <div class="nextword-explanation">
+      <p>
+        On its most fundamental level, GPT is simply
+        <a target="_blank" href="https://www.google.com/search?q=%22turbocharged+autocomplete%22">
+          "turbocharged autocomplete"</a
+        >. It's a very large deep neural network whose input is all of the words in a conversation
+        (including its own), and whose output is the next word that is likeliest to follow. With the
+        <em>Next Word Explorer</em> presented here, you can investigate its lists of likeliest
+        output word candidates, and see how its choices unfold.
+      </p>
+      <p>
+        For more visualization and discussion, please read
+        <a target="_blank" href="https://alpa84.github.io/garden_of_forking_paths">
+          "ChatGPT as a garden of forking paths" by Alejandro Panza</a
+        >.
+      </p>
+    </div>
   </div>
 </template>
 
@@ -253,13 +271,13 @@ onMounted(() => {
         border: 1px solid #888;
         border-radius: 1ex;
 
-        min-height: 5em;
+        min-height: 3.5em;
         position: relative;
         padding: 0.5ex 1ex;
         box-sizing: border-box;
 
         &::after {
-          content: 'Enter the beginning of a text passage here. GPT will continue it using various explorable branches of possibilities that you can unfold word by word.';
+          content: 'Enter the beginning of a text passage here. GPT will autocomplete it using various explorable branches of possibilities that you can unfold word by word.';
           padding: 0.5ex 1ex;
           box-sizing: border-box;
           position: absolute;
@@ -342,6 +360,8 @@ onMounted(() => {
         color: #000;
         font-weight: bold;
         margin-left: 1em;
+        position: relative;
+        z-index: 1;
       }
       .completion-option-probability {
         font-size: 0.875rem;
@@ -393,7 +413,7 @@ onMounted(() => {
       text-align: left;
       padding: 0.5ex 1ex;
       background-color: #eed;
-      min-height: 4.5em;
+      min-height: 3em;
     }
   }
 
@@ -436,6 +456,12 @@ onMounted(() => {
         margin-bottom: 0.5ex;
       }
     }
+  }
+
+  .nextword-explanation {
+    margin: 1ex 1em;
+    font-size: 0.875rem;
+    text-align: left;
   }
 }
 </style>
