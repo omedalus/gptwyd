@@ -276,6 +276,10 @@ onMounted(() => {
         padding: 0.5ex 1ex;
         box-sizing: border-box;
 
+        @media screen and (max-width: 1024px) {
+          min-height: 5.5em;
+        }
+
         &::after {
           content: 'Enter the beginning of a text passage here. GPT will autocomplete it using various explorable branches of possibilities that you can unfold word by word.';
           padding: 0.5ex 1ex;
@@ -414,6 +418,10 @@ onMounted(() => {
       padding: 0.5ex 1ex;
       background-color: #eed;
       min-height: 3em;
+
+      @media screen and (max-width: 1024px) {
+        min-height: 5em;
+      }
     }
   }
 

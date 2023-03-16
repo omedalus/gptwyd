@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 
 import Header from '@/components/Header.vue';
+import PanelSlider from './components/PanelSlider.vue';
 import NextWordExplorer from './components/NextWordExplorer.vue';
 
 import { Configuration, OpenAIApi } from 'openai';
@@ -20,6 +21,23 @@ const openai = new OpenAIApi(
   })
 );
 
+const currentSlideState = ref('middle' as 'middle' | 'left' | 'right');
+
+const onSlide = (dir: 'left' | 'right') => {
+  if (currentSlideState.value === 'middle') {
+    currentSlideState.value = dir;
+    return;
+  }
+  if (currentSlideState.value === 'left' && dir === 'right') {
+    currentSlideState.value = 'middle';
+    return;
+  }
+  if (currentSlideState.value === 'right' && dir === 'left') {
+    currentSlideState.value = 'middle';
+    return;
+  }
+};
+
 onMounted(() => {});
 </script>
 
@@ -27,11 +45,14 @@ onMounted(() => {});
   <Header></Header>
 
   <main>
-    <div class="interactive-panels mainblock">
-      <div class="interactive-panel interactive-panels--nextword">
+    <div class="interactive-panels mainblock" :class="`panel-slider-${currentSlideState}`">
+      <div class="interactive-panel panel-left interactive-panels--nextword">
         <NextWordExplorer :openai="openai"></NextWordExplorer>
       </div>
-      <div class="interactive-panel interactive-panels--embeddingdistance"></div>
+      <div class="panelchooser">
+        <PanelSlider @slide="onSlide($event)"></PanelSlider>
+      </div>
+      <div class="interactive-panel panel-right interactive-panels--embeddingdistance"></div>
     </div>
   </main>
 </template>
@@ -46,25 +67,47 @@ onMounted(() => {});
   flex-direction: row;
   min-height: calc(100vh - 6em);
   padding: 1em;
-  gap: 1em;
+
+  &.panel-slider-left {
+    .panel-left {
+      flex: 0;
+      & > * {
+        display: none;
+      }
+    }
+  }
+
+  &.panel-slider-right {
+    .panel-right {
+      flex: 0;
+      & > * {
+        display: none;
+      }
+    }
+  }
 
   @media screen and (max-width: 1024px) {
     display: block;
     max-width: 640px;
     margin-left: auto;
     margin-right: auto;
+
+    .panelchooser {
+      display: none;
+    }
   }
 
   .interactive-panel {
     flex: 1;
     margin-top: 0;
     text-align: center;
-    min-width: 16em;
 
     border: 2px solid #cc8;
     border-radius: 1em;
 
     background-color: #fff;
+
+    transition: flex 0.25s;
   }
 }
 </style>
