@@ -182,7 +182,7 @@ const explanationShow = ref(true);
           class="current-text-arrow-back gptwyd-btn"
           @click="currentWordTreeNode = currentWordTreeNode.parent || currentWordTreeNode"
         >
-          <span style="font-family: Arial, Helvetica, sans-serif"> 🡄 </span>
+          <span style="font-family: unset"> 🡄 </span>
         </div>
         <div class="current-text-treedeep">
           {{ currentWordTreeNode.parent.cumulativeText

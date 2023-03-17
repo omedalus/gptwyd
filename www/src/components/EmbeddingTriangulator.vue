@@ -184,9 +184,9 @@ const explanationShow = ref(true);
             elemVariableInput.value = '';
           "
         >
-          <span style="font-family: Arial, Helvetica, sans-serif"> 🡇 </span>
+          <span style="font-family: unset"> 🡇 </span>
           Compare this text to the two references
-          <span style="font-family: Arial, Helvetica, sans-serif"> 🡇 </span>
+          <span style="font-family: unset"> 🡇 </span>
         </div>
       </div>
     </div>
