@@ -60,9 +60,25 @@ const _getEmbeddingVectorForText = async (text: string) => {
 
 watch(textRefLeft, async (newval) => {
   embeddingRefLeft.value = await _getEmbeddingVectorForText(newval);
+  variableTexts.value.forEach((vt) => {
+    vt.affinityLeft = 0;
+    if (embeddingRefLeft.value !== null) {
+      vt.affinityLeft = _dot(vt.embedding, embeddingRefLeft.value) || 0;
+      vt.affinityTotal = vt.affinityLeft + vt.affinityRight;
+    }
+  });
+  updateViz();
 });
 watch(textRefRight, async (newval) => {
   embeddingRefRight.value = await _getEmbeddingVectorForText(newval);
+  variableTexts.value.forEach((vt) => {
+    vt.affinityRight = 0;
+    if (embeddingRefRight.value !== null) {
+      vt.affinityRight = _dot(vt.embedding, embeddingRefRight.value) || 0;
+      vt.affinityTotal = vt.affinityLeft + vt.affinityRight;
+    }
+  });
+  updateViz();
 });
 
 const refComparison = computed(() => {
@@ -79,6 +95,9 @@ const colorSimilarity = (similarity: number) => {
 type VariableText = {
   text: string;
   embedding: number[] | null;
+  affinityLeft: number;
+  affinityRight: number;
+  affinityTotal: number;
 };
 
 const updateStupidVizTrick = ref(0);
@@ -94,9 +113,20 @@ const onVariableTextSubmitted = async (text: string) => {
     text,
     embedding: null
   } as VariableText;
-  variableTexts.value.push(newVT);
+  variableTexts.value.unshift(newVT);
+
   newVT.embedding = await _getEmbeddingVectorForText(text);
-  updateStupidVizTrick.value = Math.random();
+  newVT.affinityLeft = _dot(newVT.embedding, embeddingRefLeft.value) || 0;
+  newVT.affinityRight = _dot(newVT.embedding, embeddingRefRight.value) || 0;
+  newVT.affinityTotal = newVT.affinityLeft + newVT.affinityRight;
+
+  updateViz();
+};
+
+const updateViz = () => {
+  window.setTimeout(() => {
+    updateStupidVizTrick.value = Math.random();
+  }, 100);
 };
 </script>
 
@@ -141,7 +171,7 @@ const onVariableTextSubmitted = async (text: string) => {
       <div class="variable-input-fields">
         <textarea
           ref="elemVariableInput"
-          placeholder='Enter a "Variable Text". We&apos;ll compare this text to the two Reference Texts.'
+          placeholder='Enter a "Variable Text". We&apos;ll compare this text to the two Reference Texts. E.g. "The feline rested upon the floormat."'
         ></textarea>
         <div
           class="variable-input-button gptwyd-btn"
@@ -163,11 +193,32 @@ const onVariableTextSubmitted = async (text: string) => {
           </div>
           <div class="triangulated-similarity-bar-holder">
             <div
-              v-if="embeddingRefLeft && embeddingRefRight && vt.embedding && updateStupidVizTrick"
+              v-if="
+                vt.affinityLeft !== null &&
+                vt.affinityRight !== null &&
+                vt.affinityTotal !== null &&
+                updateStupidVizTrick
+              "
             >
               <div class="triangulated-similarity-bar">
-                Left: {{ _dot(embeddingRefLeft, vt.embedding) }} Right:
-                {{ _dot(embeddingRefRight, vt.embedding) }}
+                <div
+                  class="trisimbar triangulated-similarity-bar-left"
+                  :style="{
+                    backgroundColor: colorSimilarity(vt.affinityLeft),
+                    flex: vt.affinityLeft / vt.affinityTotal
+                  }"
+                >
+                  {{ (100 * vt.affinityLeft).toFixed(2) }}%
+                </div>
+                <div
+                  class="trisimbar triangulated-similarity-bar-right"
+                  :style="{
+                    backgroundColor: colorSimilarity(vt.affinityRight),
+                    flex: vt.affinityRight / vt.affinityTotal
+                  }"
+                >
+                  {{ (100 * vt.affinityRight).toFixed(2) }}%
+                </div>
               </div>
             </div>
           </div>
@@ -208,6 +259,15 @@ const onVariableTextSubmitted = async (text: string) => {
     border-top: none;
     border-bottom: none;
     margin-bottom: 1em;
+    position: relative;
+
+    .triangulated-list {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
   }
 
   .embedding-triangulator-refinput {
@@ -268,14 +328,18 @@ const onVariableTextSubmitted = async (text: string) => {
     margin-top: 1em;
     padding-top: 1ex;
     padding-bottom: 1ex;
-    border: 1px solid #886;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
 
     .triangulated-list-item-text {
       display: inline-block;
       font-style: italic;
+      color: #000;
+      border: 1px solid #cc8;
+      border-bottom: none;
+      border-radius: 1ex 1ex 0 0;
+      padding: 0.25ex 0.5ex;
+      background-color: #ffe;
+      max-width: 50%;
+      min-width: 12em;
 
       &::before {
         content: '“';
@@ -289,6 +353,26 @@ const onVariableTextSubmitted = async (text: string) => {
     .triangulated-similarity-bar-holder {
       height: 1.5em;
       background-color: #eee;
+
+      .triangulated-similarity-bar {
+        display: flex;
+        flex-direction: row;
+
+        .trisimbar {
+          flex: 1;
+          min-width: 5ex;
+          padding: 0 0.5ex;
+          font-weight: bold;
+        }
+
+        .triangulated-similarity-bar-left {
+          text-align: left;
+          border-right: 2px solid #000;
+        }
+        .triangulated-similarity-bar-right {
+          text-align: right;
+        }
+      }
     }
   }
 }
