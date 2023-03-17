@@ -98,3 +98,27 @@ p {
 .hoverafter-trigger:hover + .hoverafter-displayer {
   display: block;
 }
+
+
+.gptwyd-btn {
+  position: relative;
+  height: 100%;
+  font-weight: bold;
+  border: 1px solid #888;
+  border-radius: 0.5ex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #664;
+  background-color: #cca;
+  box-shadow: inset 0 -0.25ex 0.25ex #242a;
+  padding: 0 0.25ex;
+  cursor: pointer;
+}
+.gptwyd-btn:hover {
+  background-color: #ddb;
+}
+.gptwyd-btn:active {
+  background-color: #ffc;
+  box-shadow: inset 0 0 0.25ex #2426;
+}

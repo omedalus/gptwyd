@@ -177,7 +177,7 @@ onMounted(() => {
       </div>
       <div class="current-text-treedeep-holder" v-else>
         <div
-          class="current-text-arrow-back"
+          class="current-text-arrow-back gptwyd-btn"
           @click="currentWordTreeNode = currentWordTreeNode.parent || currentWordTreeNode"
         >
           🡄
@@ -384,32 +384,6 @@ onMounted(() => {
     flex-direction: row;
     gap: 1em;
 
-    .current-text-arrow-back {
-      position: relative;
-      height: 100%;
-      font-size: 2rem;
-      font-weight: bold;
-      border: 1px solid #888;
-      border-radius: 0.5ex;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #664;
-      background-color: #cca;
-      box-shadow: inset 0 -0.25ex 0.25ex #242a;
-      padding: 0 0.25ex;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #ddb;
-      }
-
-      &:active {
-        background-color: #ffc;
-        box-shadow: inset 0 0 0.25ex #2426;
-      }
-    }
-
     .current-text-treedeep {
       flex-grow: 1;
       border: 1px solid #888;
@@ -470,6 +444,10 @@ onMounted(() => {
     margin: 1ex 1em;
     font-size: 0.875rem;
     text-align: left;
+  }
+
+  .current-text-arrow-back {
+    font-size: 2rem;
   }
 }
 </style>

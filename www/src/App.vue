@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue';
 import Header from '@/components/Header.vue';
 import PanelSlider from './components/PanelSlider.vue';
 import NextWordExplorer from './components/NextWordExplorer.vue';
+import EmbeddingTriangulator from './components/EmbeddingTriangulator.vue';
 
 import { Configuration, OpenAIApi } from 'openai';
 
@@ -52,7 +53,9 @@ onMounted(() => {});
       <div class="panelchooser">
         <PanelSlider @slide="onSlide($event)"></PanelSlider>
       </div>
-      <div class="interactive-panel panel-right interactive-panels--embeddingdistance"></div>
+      <div class="interactive-panel panel-right interactive-panels--embeddingdistance">
+        <EmbeddingTriangulator :openai="openai"></EmbeddingTriangulator>
+      </div>
     </div>
   </main>
 </template>
@@ -98,6 +101,8 @@ onMounted(() => {});
   }
 
   .interactive-panel {
+    position: relative;
+
     flex: 1;
     margin-top: 0;
     text-align: center;
