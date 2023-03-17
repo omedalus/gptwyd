@@ -169,7 +169,7 @@ const explanationShow = ref(true);
           style="border-right: none"
           :value="textRefRight"
           @blur="textRefRight = _getValueFromEventTarget($event)"
-          placeholder='Enter a phrase or sentence for the Left Reference Text, e.g. "The car sat in the road."'
+          placeholder='Enter a phrase or sentence for the Right Reference Text, e.g. "The car stalled in the road."'
         ></textarea>
       </div>
       <div class="variable-input-fields">
@@ -184,7 +184,9 @@ const explanationShow = ref(true);
             elemVariableInput.value = '';
           "
         >
-          🡇 Compare this text to the two references 🡇
+          <span style="font-family: Arial, Helvetica, sans-serif"> 🡇 </span>
+          Compare this text to the two references
+          <span style="font-family: Arial, Helvetica, sans-serif"> 🡇 </span>
         </div>
       </div>
     </div>
