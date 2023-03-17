@@ -325,7 +325,6 @@ const explanationShow = ref(true);
 
   .completion-tree-view {
     height: 100%;
-    min-height: 35em;
     user-select: none;
   }
 
@@ -334,6 +333,7 @@ const explanationShow = ref(true);
     flex-direction: column;
     gap: 1ex;
     height: calc(100% - 1em);
+    min-height: 35em;
     margin-top: 1em;
     margin-left: 1ex;
     margin-right: 1ex;

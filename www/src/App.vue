@@ -53,6 +53,7 @@ onMounted(() => {});
       <div class="panelchooser">
         <PanelSlider @slide="onSlide($event)"></PanelSlider>
       </div>
+      <div class="panelseparator"></div>
       <div class="interactive-panel panel-right interactive-panels--embeddingdistance">
         <EmbeddingTriangulator :openai="openai"></EmbeddingTriangulator>
       </div>
@@ -89,6 +90,10 @@ onMounted(() => {});
     }
   }
 
+  .panelseparator {
+    display: none;
+  }
+
   @media screen and (max-width: 1024px) {
     display: block;
     max-width: 640px;
@@ -97,6 +102,11 @@ onMounted(() => {});
 
     .panelchooser {
       display: none;
+    }
+
+    .panelseparator {
+      display: block;
+      height: 3em;
     }
   }
 
