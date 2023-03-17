@@ -188,36 +188,42 @@ const updateViz = () => {
     <div class="triangulated-variables">
       <div class="triangulated-list">
         <div class="triangulated-list-item" v-for="vt in variableTexts" :key="vt.text">
-          <div class="triangulated-list-item-text">
-            {{ vt.text }}
-          </div>
-          <div class="triangulated-similarity-bar-holder">
-            <div
-              v-if="
-                vt.affinityLeft !== null &&
-                vt.affinityRight !== null &&
-                vt.affinityTotal !== null &&
-                updateStupidVizTrick
-              "
-            >
-              <div class="triangulated-similarity-bar">
-                <div
-                  class="trisimbar triangulated-similarity-bar-left"
-                  :style="{
-                    backgroundColor: colorSimilarity(vt.affinityLeft),
-                    flex: vt.affinityLeft / vt.affinityTotal
-                  }"
-                >
-                  {{ (100 * vt.affinityLeft).toFixed(2) }}%
-                </div>
-                <div
-                  class="trisimbar triangulated-similarity-bar-right"
-                  :style="{
-                    backgroundColor: colorSimilarity(vt.affinityRight),
-                    flex: vt.affinityRight / vt.affinityTotal
-                  }"
-                >
-                  {{ (100 * vt.affinityRight).toFixed(2) }}%
+          <div class="triangulated-list-item-holder" v-if="updateStupidVizTrick">
+            <div class="triangulated-list-item-text-holder">
+              <div :style="{ flex: 0.01 + vt.affinityRight / vt.affinityTotal || 1 }"></div>
+              <div class="triangulated-list-item-text">{{ vt.text }}</div>
+              <div :style="{ flex: 0.01 + vt.affinityLeft / vt.affinityTotal || 1 }"></div>
+            </div>
+            <div class="triangulated-similarity-bar-holder">
+              <div
+                v-if="
+                  vt.affinityLeft !== null &&
+                  !isNaN(vt.affinityLeft) &&
+                  vt.affinityRight !== null &&
+                  !isNaN(vt.affinityRight) &&
+                  vt.affinityTotal !== null &&
+                  !isNaN(vt.affinityTotal)
+                "
+              >
+                <div class="triangulated-similarity-bar">
+                  <div
+                    class="trisimbar triangulated-similarity-bar-left"
+                    :style="{
+                      backgroundColor: colorSimilarity(vt.affinityLeft),
+                      flex: vt.affinityLeft / vt.affinityTotal
+                    }"
+                  >
+                    {{ (100 * vt.affinityLeft).toFixed(2) }}%
+                  </div>
+                  <div
+                    class="trisimbar triangulated-similarity-bar-right"
+                    :style="{
+                      backgroundColor: colorSimilarity(vt.affinityRight),
+                      flex: vt.affinityRight / vt.affinityTotal
+                    }"
+                  >
+                    {{ (100 * vt.affinityRight).toFixed(2) }}%
+                  </div>
                 </div>
               </div>
             </div>
@@ -290,6 +296,12 @@ const updateViz = () => {
         flex: 1;
         height: 6em;
         resize: none;
+        background-color: #ffe;
+
+        &:active,
+        &:focus {
+          background-color: #fff;
+        }
       }
 
       .refinput-affinities {
@@ -329,24 +341,32 @@ const updateViz = () => {
     padding-top: 1ex;
     padding-bottom: 1ex;
 
-    .triangulated-list-item-text {
-      display: inline-block;
-      font-style: italic;
-      color: #000;
-      border: 1px solid #cc8;
-      border-bottom: none;
-      border-radius: 1ex 1ex 0 0;
-      padding: 0.25ex 0.5ex;
-      background-color: #ffe;
-      max-width: 50%;
-      min-width: 12em;
+    .triangulated-list-item-text-holder {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
 
-      &::before {
-        content: '“';
-      }
+      .triangulated-list-item-text {
+        display: inline-block;
+        font-style: italic;
+        color: #000;
+        border: 1px solid #cc8;
+        border-bottom: none;
+        border-radius: 1ex 1ex 0 0;
+        padding: 0.25ex 0.5ex;
+        background-color: #ffe;
 
-      &::after {
-        content: '”';
+        max-width: 50%;
+        min-width: 12em;
+        flex: 0;
+
+        &::before {
+          content: '“';
+        }
+
+        &::after {
+          content: '”';
+        }
       }
     }
 
