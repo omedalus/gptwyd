@@ -151,6 +151,8 @@ const onKeydown = (event: KeyboardEvent) => {
 onMounted(() => {
   window.addEventListener('keydown', onKeydown);
 });
+
+const explanationShow = ref(true);
 </script>
 
 <template>
@@ -239,27 +241,37 @@ onMounted(() => {
     </div>
 
     <div class="nextword-explanation">
-      <p>
-        On its most fundamental level, GPT is simply
-        <a target="_blank" href="https://www.google.com/search?q=%22turbocharged+autocomplete%22">
-          "turbocharged autocomplete"</a
-        >. It's a very large deep neural network whose input is all of the words in a conversation
-        (including its own), and whose output is the next word that is likeliest to follow. With the
-        <em>Next Word Explorer</em> presented here, you can investigate its lists of likeliest
-        output word candidates, and see how its choices unfold.
-      </p>
-      <p>
-        For more visualization and discussion, please read
-        <a target="_blank" href="https://alpa84.github.io/garden_of_forking_paths">
-          "ChatGPT as a garden of forking paths" by Alejandro Panza</a
-        >.
-      </p>
+      <div class="explanation-showhide" style="text-align: right; padding-bottom: 0.5ex">
+        <a v-if="explanationShow" @click="explanationShow = false">Hide explanation</a>
+        <a v-if="!explanationShow" @click="explanationShow = true">Show explanation</a>
+      </div>
+      <div class="explanation-content" v-if="explanationShow">
+        <p>
+          On its most fundamental level, GPT is simply
+          <a target="_blank" href="https://www.google.com/search?q=%22turbocharged+autocomplete%22">
+            "turbocharged autocomplete"</a
+          >. It's a very large deep neural network whose input is all of the words in a conversation
+          (including its own), and whose output is the next word that is likeliest to follow. With
+          the <em>Next Word Explorer</em> presented here, you can investigate its lists of likeliest
+          output word candidates, and see how its choices unfold.
+        </p>
+        <p>
+          For more visualization and discussion, please read
+          <a target="_blank" href="https://alpa84.github.io/garden_of_forking_paths">
+            "ChatGPT as a garden of forking paths" by Alejandro Panza</a
+          >.
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .nextwordexplorer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   .current-text-display {
     .current-text-display-entry-area {
       margin: 0 1em;
@@ -312,7 +324,7 @@ onMounted(() => {
   }
 
   .completion-tree-view {
-    height: calc(100vh - 20em);
+    height: 100%;
     min-height: 35em;
     user-select: none;
   }
@@ -321,7 +333,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: 1ex;
-    height: 100%;
+    height: calc(100% - 1em);
     margin-top: 1em;
     margin-left: 1ex;
     margin-right: 1ex;
