@@ -128,6 +128,8 @@ const updateViz = () => {
     updateStupidVizTrick.value = Math.random();
   }, 100);
 };
+
+const explanationShow = ref(true);
 </script>
 
 <template>
@@ -151,7 +153,9 @@ const updateViz = () => {
         ></textarea>
         <div class="refinput-affinities">
           <div v-if="refComparison !== null">
-            <div style="padding: 0 1ex">These two texts have a conceptual similarity score of:</div>
+            <div style="padding: 0 1ex">
+              The ideas expressed in these two texts have a similarity score of:
+            </div>
 
             <div
               class="similarity-bar"
@@ -233,20 +237,44 @@ const updateViz = () => {
     </div>
 
     <div class="explanation explanation-what-is-embedding">
-      <p>
-        In
-        <a href="https://www.ibm.com/topics/natural-language-processing"
-          >natural language processing</a
-        >, a
-        <a href="https://www.deepset.ai/blog/the-beginners-guide-to-text-embeddings"
-          >text embedding</a
-        >
-        is a long numerical sequence that essentially represents a piece of text encoded as a
-        "thoughtform". The numerical values that comprise an embedding are meaningless in and of
-        themselves, but embeddings that represent similar concepts or ideas will be similar (i.e.
-        proximate) to each other. And, by the same token, embeddings that represent completely
-        unrelated concepts will be very dissimilar (i.e. far apart) from one another.
-      </p>
+      <div class="explanation-showhide" style="text-align: right; padding-bottom: 0.5ex">
+        <a v-if="explanationShow" @click="explanationShow = false">Hide explanation</a>
+        <a v-if="!explanationShow" @click="explanationShow = true">Show explanation</a>
+      </div>
+      <div class="explanation-content" v-if="explanationShow">
+        <p>
+          In
+          <a href="https://www.ibm.com/topics/natural-language-processing"
+            >natural language processing</a
+          >, a
+          <a href="https://www.deepset.ai/blog/the-beginners-guide-to-text-embeddings"
+            >text embedding</a
+          >
+          is a long numerical sequence that essentially represents a piece of text encoded as a
+          "thoughtform". The numerical values that comprise an embedding are meaningless in and of
+          themselves, but embeddings that represent similar concepts or ideas will be similar (i.e.
+          proximate) to each other. And, by the same token, embeddings that represent completely
+          unrelated concepts will be very dissimilar (i.e. far apart) from one another.
+        </p>
+        <p>
+          This visualizer shows how GPT "conceptualizes" ideas expressed in text by comparing the
+          similarities of their embeddings (i.e. the numerical representations of their
+          "thoughtforms"). You can see how similarly GPT perceives two "reference texts" to one
+          another, and how it perceives different "variable texts" relative to those reference
+          texts.
+        </p>
+        <p>
+          <strong
+            >The percentages on the bars of the variable texts aren't supposed to add up to
+            100%.</strong
+          >
+          The left and right percentages show how similar the variable text is to each of the left
+          and right reference texts, respectively. The variable text could be very similar to both
+          (i.e. high percentages on both sides), or to neither (i.e. low percentages on both sides).
+          The
+          <em>difference</em> in these percentages is how we visualize GPT's "judgment".
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -266,6 +294,7 @@ const updateViz = () => {
     border-bottom: none;
     margin-bottom: 1em;
     position: relative;
+    min-height: 15em;
 
     .triangulated-list {
       position: absolute;
@@ -294,9 +323,13 @@ const updateViz = () => {
 
       & > textarea {
         flex: 1;
-        height: 6em;
+        height: 5em;
         resize: none;
         background-color: #ffe;
+
+        @media screen and (max-width: 1280px) {
+          height: 7.5em;
+        }
 
         &:active,
         &:focus {

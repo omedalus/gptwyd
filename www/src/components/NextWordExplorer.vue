@@ -276,7 +276,7 @@ onMounted(() => {
         padding: 0.5ex 1ex;
         box-sizing: border-box;
 
-        @media screen and (max-width: 1024px) {
+        @media screen and (max-width: 1280px) {
           min-height: 5.5em;
         }
 
@@ -393,7 +393,7 @@ onMounted(() => {
       background-color: #eed;
       min-height: 3em;
 
-      @media screen and (max-width: 1024px) {
+      @media screen and (max-width: 1280px) {
         min-height: 5em;
       }
     }
