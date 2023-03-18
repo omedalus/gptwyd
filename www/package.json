@@ -9,7 +9,7 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "publish": "(npm run build) && (git add dist/*) && (git commit -m\"Build automessage\") && (git push) && (cd ..) && (git subtree push --prefix www/dist origin gh-pages)"
+    "publish": "(npm run build) && (git add dist/*) && (git commit -m\"Build automessage\" || 0) && (git push || 0) && (cd ..) && (git subtree push --prefix www/dist origin gh-pages)"
   },
   "dependencies": {
     "@mdi/js": "^7.1.96",
