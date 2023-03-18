@@ -184,9 +184,9 @@ const explanationShow = ref(true);
             elemVariableInput.value = '';
           "
         >
-          <span class="unicode-droid"> 🡇 </span>
+          <mdicon name="arrow-down-bold"></mdicon>
           Compare this text to the two references
-          <span class="unicode-droid"> 🡇 </span>
+          <mdicon name="arrow-down-bold"></mdicon>
         </div>
       </div>
     </div>

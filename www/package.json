@@ -12,6 +12,8 @@
     "publish": "npm run build && git commit -a -m'Build automessage' && git push && cd .. && git subtree push --prefix www/dist origin gh-pages"
   },
   "dependencies": {
+    "@mdi/js": "^7.1.96",
+    "mdi-vue": "^3.0.13",
     "openai": "^3.2.1",
     "rot13-cipher": "^1.0.0",
     "vue": "^3.2.45"
